@@ -1,0 +1,36 @@
+{
+  "name": "okoze",
+  "description": "Okoze is stub server that returns a response using a snapshot of the real server's response.",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/mya-ake/okoze.git",
+  "bugs": {
+    "url": "https://github.com/mya-ake/okoze/issues"
+  },
+  "author": "mya-ake <make.app.ts@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test:unit": "jest --config ./tests/unit/jest.config.js",
+    "test:e2e": "OKOZE_PORT=3000 jest --config ./tests/e2e/jest.config.js"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "consola": "^2.5.7",
+    "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "@types/express": "^4.16.1",
+    "@types/jest": "^24.0.11",
+    "@types/node": "^11.12.0",
+    "@typescript-eslint/eslint-plugin": "^1.5.0",
+    "eslint": "^5.15.3",
+    "eslint-config-prettier": "^4.1.0",
+    "eslint-plugin-prettier": "^3.0.1",
+    "jest": "^24.5.0",
+    "prettier": "^1.16.4",
+    "ts-jest": "^24.0.0",
+    "typescript": "^3.3.4000"
+  }
+}
