@@ -27,7 +27,10 @@ afterAll(() => {
 describe('e2e tests', () => {
   it('success', async () => {
     expect.assertions(2);
-    const { status, data } = await request.get('/users');
+    const { status, data } = await request.get('/users').catch(err => {
+      // console.log(err);
+      return err.response;
+    });
     expect(status).toBe(200);
     expect(data).toEqual({
       users: [

@@ -12,16 +12,30 @@ const originHost = process.env.OKOZE_ORIGIN_HOST || 'localhost';
 const baseURL = `http://${originHost}${originPort}`;
 const request = axios.create({
   baseURL,
+  adapter: require('axios/lib/adapters/http'),
 });
 
 app.all('*', async (req: expressTypes.Request, res: expressTypes.Response) => {
   const { method, url } = req;
   consola.info(`${method} ${baseURL}${url}`);
-  const { status, data } = await request({
+
+  const axiosConfig = {
     method,
     url,
-  }).catch(err => err.response);
+    headers: {
+      ...req.headers,
+    },
+  };
+
+  const { status, data, headers } = await request(axiosConfig).catch(
+    err => err.response || {},
+  );
+
   res.status(status);
+  res.set({
+    ...headers,
+    'Cache-Control': 'no-store',
+  });
   res.json(data);
 });
 
