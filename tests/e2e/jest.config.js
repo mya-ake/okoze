@@ -9,7 +9,7 @@ module.exports = {
   },
   testMatch: ['**/tests/e2e/**/*.spec.ts'],
   testURL: 'http://localhost/',
-  // testEnvironment: 'node',
+  testEnvironment: process.env.TEST_TARGET === 'node' ? 'node' : 'jsdom',
   globals: {
     'ts-jest': {
       diagnostics: {

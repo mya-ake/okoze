@@ -5,21 +5,23 @@ import axios from 'axios';
 import { join } from 'path';
 
 import { wrightFile, existPathname, readFile } from './lib/file';
-import { OkozeResponse } from 'src/types';
+import { buildOption } from './lib/builders';
+import { OkozeResponse } from './types';
 
 export const app = express();
-const port = process.env.OKOZE_PORT ? Number(process.env.OKOZE_PORT) : 3000;
-const host = process.env.OKOZE_HOST || 'localhost';
-const originPort = `:${process.env.OKOZE_ORIGIN_PORT}`;
-const originHost = process.env.OKOZE_ORIGIN_HOST || 'localhost';
+const {
+  port,
+  host,
+  originPort,
+  originHost,
+  baseURL,
+  snapshotDir,
+} = buildOption();
 
-const baseURL = `http://${originHost}${originPort}`;
 const request = axios.create({
   baseURL,
   adapter: require('axios/lib/adapters/http'),
 });
-
-const snapshotDir = join(process.cwd(), '__snapshots__');
 
 const createSnapshotPathname = ({ url }: { url: string }) => {
   return `${url}.json`;
@@ -79,7 +81,8 @@ app.all('*', async (req: expressTypes.Request, res: expressTypes.Response) => {
   res.status(status);
   res.set({
     ...headers,
-    'Cache-Control': 'no-store',
+    'cache-control': 'no-store',
+    'x-okoze-snapshot': existSnapshot ? 'used' : 'update',
   });
   res.json(data);
 });
