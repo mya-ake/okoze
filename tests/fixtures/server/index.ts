@@ -1,4 +1,5 @@
 import express = require('express');
+import bodyParser = require('body-parser');
 import * as faker from 'faker';
 
 export const app = express();
@@ -9,9 +10,13 @@ type User = {
   role: string;
 };
 
-const createUser = ({ role = 'general' } = {}): User => ({
-  id: faker.random.number(),
-  name: faker.name.findName(),
+const createUser = ({
+  id = faker.random.number(),
+  name = faker.name.findName(),
+  role = 'general',
+} = {}): User => ({
+  id,
+  name,
   role,
 });
 
@@ -37,6 +42,8 @@ app.use(
   },
 );
 
+app.use(bodyParser.json());
+
 app.get('/users', (req: express.Request, res: express.Response) => {
   const query = req.query;
   const filters = ((query.filter as string) || '')
@@ -61,6 +68,33 @@ app.get('/users', (req: express.Request, res: express.Response) => {
 
   res.set('Access-Control-Allow-Origin', '*');
   res.json({ users });
+});
+
+app.post('/users', (req: express.Request, res: express.Response) => {
+  res.status(201);
+  res.json({ user: createUser({ ...req.body }) });
+});
+
+app.put('/users/:id', (req: express.Request, res: express.Response) => {
+  const { id } = req.params;
+  res.status(200);
+  res.json({ user: createUser({ ...req.body, id: Number(id) }) });
+});
+
+app.patch('/users/:id', (req: express.Request, res: express.Response) => {
+  const { id } = req.params;
+  res.status(200);
+  res.json({ user: createUser({ ...req.body, id: Number(id) }) });
+});
+
+app.delete('/users/:id', (req: express.Request, res: express.Response) => {
+  res.status(204);
+  res.send();
+});
+
+app.options('*', (req: express.Request, res: express.Response) => {
+  res.status(200);
+  res.send();
 });
 
 app.all('*', (req: express.Request, res: express.Response) => {

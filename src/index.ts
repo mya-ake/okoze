@@ -1,10 +1,11 @@
 import express = require('express');
-import consola from 'consola';
-import axios from 'axios';
+import bodyParser = require('body-parser');
+import axios, { AxiosRequestConfig } from 'axios';
 import { join } from 'path';
 
 import { wrightFile, existPathname, readFile } from './lib/file';
 import { buildOption } from './lib/builders';
+import { buildLoggerMiddleware } from './middlewares/loggerMiddleWare';
 import { OkozeResponse } from './types';
 
 export const app = express();
@@ -22,17 +23,29 @@ const request = axios.create({
   adapter: require('axios/lib/adapters/http'),
 });
 
-const createSnapshotPathname = ({ url }: { url: string }) => {
-  return `${url}.json`;
+const createSnapshotPathname = ({
+  method,
+  url,
+}: {
+  method: string;
+  url: string;
+}) => {
+  return `${method}:${url}.json`;
 };
 
 const requestOrigin = async (
   { snapshotPathname }: { snapshotPathname: string },
-  { method, url, headers }: { method: string; url: string; headers: any },
-): Promise<OkozeResponse> => {
-  const axiosConfig = {
+  {
     method,
     url,
+    headers,
+    body,
+  }: { method: string; url: string; headers: any; body: any },
+): Promise<OkozeResponse> => {
+  const axiosConfig: AxiosRequestConfig = {
+    method,
+    url,
+    data: body,
     headers: {
       ...headers,
     },
@@ -64,10 +77,12 @@ const readSnapshot = async ({
   return { status, data, headers };
 };
 
-app.all('*', async (req: express.Request, res: express.Response) => {
-  const { method, url } = req;
-  consola.info(`${method} ${baseURL}${url}`);
+app.use(bodyParser.json());
+if (process.env.DEBUG === 'true') {
+  app.use(buildLoggerMiddleware({ baseURL }));
+}
 
+app.all('*', async (req: express.Request, res: express.Response) => {
   const snapshotFilename = createSnapshotPathname(req);
   const snapshotPathname = join(snapshotDir, snapshotFilename);
 
