@@ -39,32 +39,41 @@ afterAll(async () => {
 
 const isNode = process.env.TEST_TARGET === 'node';
 describe('e2e tests', () => {
-  describe('simple', () => {
-    it('update', async () => {
-      expect.assertions(isNode ? 3 : 2);
-      const { status, data, headers } = await request
-        .get('/users')
-        .catch(err => {
-          return err.response;
-        });
+  describe('get', () => {
+    const requestUsers = () => {
+      return request.get('/users').catch(err => {
+        return err.response;
+      });
+    };
 
+    const expects = ({ status, data }: { status: number; data: any }) => {
       expect(status).toBe(200);
       expect(data).toEqual({
         users: [
           {
             id: expect.any(Number),
             name: expect.any(String),
+            role: 'general',
           },
           {
             id: expect.any(Number),
             name: expect.any(String),
+            role: 'general',
           },
           {
             id: expect.any(Number),
             name: expect.any(String),
+            role: 'admin',
           },
         ],
       });
+    };
+
+    it('update', async () => {
+      expect.assertions(isNode ? 3 : 2);
+      const { status, data, headers } = await requestUsers();
+
+      expects({ status, data });
       if (isNode) {
         expect(headers['x-okoze-snapshot']).toBe('update');
       }
@@ -72,29 +81,52 @@ describe('e2e tests', () => {
 
     it('snapshot', async () => {
       expect.assertions(isNode ? 3 : 2);
-      const { status, data, headers } = await request
-        .get('/users')
+      const { status, data, headers } = await requestUsers();
+
+      expects({ status, data });
+      if (isNode) {
+        expect(headers['x-okoze-snapshot']).toBe('used');
+      }
+    });
+  });
+
+  describe('get, with query', () => {
+    const requestUsers = () => {
+      return request
+        .get('/users', { params: { filter: 'role:admin' } })
         .catch(err => {
           return err.response;
         });
+    };
 
+    const expects = ({ status, data }: { status: number; data: any }) => {
       expect(status).toBe(200);
       expect(data).toEqual({
         users: [
           {
             id: expect.any(Number),
             name: expect.any(String),
-          },
-          {
-            id: expect.any(Number),
-            name: expect.any(String),
-          },
-          {
-            id: expect.any(Number),
-            name: expect.any(String),
+            role: 'admin',
           },
         ],
       });
+    };
+
+    it('update', async () => {
+      expect.assertions(isNode ? 3 : 2);
+      const { status, data, headers } = await requestUsers();
+
+      expects({ status, data });
+      if (isNode) {
+        expect(headers['x-okoze-snapshot']).toBe('update');
+      }
+    });
+
+    it('snapshot', async () => {
+      expect.assertions(isNode ? 3 : 2);
+      const { status, data, headers } = await requestUsers();
+
+      expects({ status, data });
       if (isNode) {
         expect(headers['x-okoze-snapshot']).toBe('used');
       }

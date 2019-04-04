@@ -1,2 +1,2 @@
-export * from './okoze';
-export * from './common';
+export * from './okoze.types';
+export * from './common.types';

@@ -4,13 +4,20 @@ import * as faker from 'faker';
 
 export const app = express();
 
-const createUser = () => ({
+type User = {
+  id: number;
+  name: string;
+  role: string;
+};
+
+const createUser = ({ role = 'general' } = {}): User => ({
   id: faker.random.number(),
   name: faker.name.findName(),
+  role,
 });
 
-const createUsers = () => {
-  return [...Array(3)].map(createUser);
+const createUsers = (): User[] => {
+  return [...Array(2)].map(createUser).concat(createUser({ role: 'admin' }));
 };
 
 app.use(
@@ -36,8 +43,29 @@ app.use(
 );
 
 app.get('/users', (req: expressTypes.Request, res: expressTypes.Response) => {
+  const query = req.query;
+  const filters = ((query.filter as string) || '')
+    .split(',')
+    .filter(item => item.includes(':'))
+    .map(item => item.split(':'));
+
+  const filterFunc = (user: User) => {
+    if (filters.length === 0) {
+      return true;
+    }
+    return filters.some(([key, value]) => {
+      switch (key) {
+        case 'role':
+          return user.role === value;
+        default:
+          return false;
+      }
+    });
+  };
+  const users = createUsers().filter(filterFunc);
+
   res.set('Access-Control-Allow-Origin', '*');
-  res.json({ users: createUsers() });
+  res.json({ users });
 });
 
 app.all('*', (req: expressTypes.Request, res: expressTypes.Response) => {
