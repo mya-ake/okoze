@@ -1,5 +1,4 @@
-const express = require('express');
-import * as expressTypes from 'express';
+import express = require('express');
 import * as faker from 'faker';
 
 export const app = express();
@@ -21,11 +20,7 @@ const createUsers = (): User[] => {
 };
 
 app.use(
-  (
-    req: expressTypes.Request,
-    res: expressTypes.Response,
-    next: expressTypes.NextFunction,
-  ) => {
+  (req: express.Request, res: express.Response, next: express.NextFunction) => {
     res.set({
       'Access-Control-Allow-Headers': Object.keys(req.headers),
       'Access-Control-Allow-Methods': [
@@ -42,7 +37,7 @@ app.use(
   },
 );
 
-app.get('/users', (req: expressTypes.Request, res: expressTypes.Response) => {
+app.get('/users', (req: express.Request, res: express.Response) => {
   const query = req.query;
   const filters = ((query.filter as string) || '')
     .split(',')
@@ -68,7 +63,7 @@ app.get('/users', (req: expressTypes.Request, res: expressTypes.Response) => {
   res.json({ users });
 });
 
-app.all('*', (req: expressTypes.Request, res: expressTypes.Response) => {
+app.all('*', (req: express.Request, res: express.Response) => {
   res.status(404);
   res.json({ message: 'not found' });
 });

@@ -1,5 +1,4 @@
-const express = require('express');
-import * as expressTypes from 'express';
+import express = require('express');
 import consola from 'consola';
 import axios from 'axios';
 import { join } from 'path';
@@ -65,7 +64,7 @@ const readSnapshot = async ({
   return { status, data, headers };
 };
 
-app.all('*', async (req: expressTypes.Request, res: expressTypes.Response) => {
+app.all('*', async (req: express.Request, res: express.Response) => {
   const { method, url } = req;
   consola.info(`${method} ${baseURL}${url}`);
 
