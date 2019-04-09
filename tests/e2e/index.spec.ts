@@ -1,20 +1,32 @@
 import axios from 'axios';
 import { createServer, Server } from 'http';
+import { join } from 'path';
 const rimraf = require('rimraf');
 
-import { app } from 'src/index';
+import { OkozeApp } from 'src/core';
 import { app as originApp } from './../fixtures/server';
-import { buildOption } from 'src/lib/builders';
 
-const { port, host, originPort, originHost, snapshotDir } = buildOption();
+const port = 3000;
+const host = 'localhost';
+const originPort = 3080;
+const originHost = 'localhost';
+const origin = `http://${originHost}:${originPort}`;
+
+const app = new OkozeApp({
+  update: false,
+  port,
+  host,
+  origin,
+  snapshotDir: join(process.cwd(), 'tests', 'e2e', '__snapshots__'),
+});
 
 const request = axios.create({
-  baseURL: `http://${host}:${port}`,
+  baseURL: `http://${app.host}:${app.port}`,
 });
 
 const removeSnapshots = () => {
   return new Promise((resolve, reject) => {
-    rimraf(snapshotDir, (err: any) => {
+    rimraf(app.snapshotDir, (err: any) => {
       if (err) {
         reject(err);
       } else {
@@ -27,7 +39,7 @@ const removeSnapshots = () => {
 let okozeServer: Server;
 let originServer: Server;
 beforeAll(() => {
-  okozeServer = createServer(app).listen(port, host);
+  okozeServer = createServer(app.server).listen(app.port, app.host);
   // @ts-ignore
   originServer = createServer(originApp).listen(originPort, originHost);
 });

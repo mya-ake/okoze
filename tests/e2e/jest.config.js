@@ -1,6 +1,6 @@
 module.exports = {
   rootDir: process.cwd(),
-  moduleFileExtensions: ['js', 'ts'],
+  moduleFileExtensions: ['js', 'ts', 'json'],
   transform: {
     '^.+\\.ts$': 'ts-jest',
   },
@@ -15,6 +15,7 @@ module.exports = {
       diagnostics: {
         ignoreCodes: ['TS2307'],
       },
+      tsConfig: './tests/tsconfig.json',
     },
   },
 };
