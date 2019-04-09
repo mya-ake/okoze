@@ -16,7 +16,6 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "clean": "rimraf dist",
-    "test:unit": "jest --config ./tests/unit/jest.config.js",
     "test:e2e": "run-s clean test:e2e:*",
     "test:e2e:node": "NODE_ENV=test TEST_TARGET=node jest --config ./tests/e2e/jest.config.js --detectOpenHandles",
     "test:e2e:browser": "NODE_ENV=test TEST_TARGET=browser jest --config ./tests/e2e/jest.config.js --detectOpenHandles"
