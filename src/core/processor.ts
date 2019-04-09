@@ -61,7 +61,7 @@ const buildRequestOrigin = (request: AxiosInstance) => {
 };
 
 export const buildProcessor = (options: OkozeOptions) => {
-  const { origin: baseURL, snapshotDir } = options;
+  const { update, origin: baseURL, snapshotDir } = options;
   const request = axios.create({
     baseURL,
     adapter: require('axios/lib/adapters/http'),
@@ -73,9 +73,10 @@ export const buildProcessor = (options: OkozeOptions) => {
     const snapshotFilename = createSnapshotPathname(req);
     const snapshotPathname = join(snapshotDir, snapshotFilename);
 
-    const existSnapshot = await existPathname(snapshotPathname);
+    const useSnapshot =
+      update === false && (await existPathname(snapshotPathname));
 
-    const { status, data, headers } = existSnapshot
+    const { status, data, headers } = useSnapshot
       ? await readSnapshot({ snapshotPathname })
       : await requestOrigin({ snapshotPathname }, req);
 
@@ -83,7 +84,7 @@ export const buildProcessor = (options: OkozeOptions) => {
     res.set({
       ...headers,
       'cache-control': 'no-store',
-      'x-okoze-snapshot': existSnapshot ? 'used' : 'update',
+      'x-okoze-snapshot': useSnapshot ? 'used' : 'update',
     });
     res.json(data);
   };

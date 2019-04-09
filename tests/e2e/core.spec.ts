@@ -1,56 +1,23 @@
 import axios from 'axios';
-import { createServer, Server } from 'http';
 import { join } from 'path';
-const rimraf = require('rimraf');
 
 import { OkozeApp } from 'src/core';
-import { app as originApp } from './../fixtures/server';
-
-const port = 3000;
-const host = 'localhost';
-const originPort = 3080;
-const originHost = 'localhost';
-const origin = `http://${originHost}:${originPort}`;
+import { setupCommonProcessing, buildEnvOptions } from '../fixtures/setup';
 
 const app = new OkozeApp({
   update: false,
-  port,
-  host,
-  origin,
-  snapshotDir: join(process.cwd(), 'tests', 'e2e', '__snapshots__'),
+  ...buildEnvOptions(),
+  snapshotDir: join(process.cwd(), 'tests', 'e2e', '__snapshots__', 'basic'),
 });
 
 const request = axios.create({
   baseURL: `http://${app.host}:${app.port}`,
 });
 
-const removeSnapshots = () => {
-  return new Promise((resolve, reject) => {
-    rimraf(app.snapshotDir, (err: any) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
-    });
-  });
-};
-
-let okozeServer: Server;
-let originServer: Server;
-beforeAll(() => {
-  okozeServer = createServer(app.server).listen(app.port, app.host);
-  // @ts-ignore
-  originServer = createServer(originApp).listen(originPort, originHost);
-});
-afterAll(async () => {
-  okozeServer.close();
-  originServer.close();
-  await removeSnapshots();
-});
+setupCommonProcessing(app);
 
 const isNode = process.env.TEST_TARGET === 'node';
-describe('e2e tests', () => {
+describe('e2e tests, core', () => {
   describe('get', () => {
     const requestUsers = () => {
       return request.get('/users').catch(err => {
