@@ -73,10 +73,9 @@ export const buildProcessor = (options: OkozeOptions) => {
     const snapshotFilename = createSnapshotPathname(req);
     const snapshotPathname = join(snapshotDir, snapshotFilename);
 
-    const useSnapshot =
-      update === false && (await existPathname(snapshotPathname));
+    const existSnapshot = await existPathname(snapshotPathname);
 
-    const { status, data, headers } = useSnapshot
+    const { status, data, headers } = existSnapshot
       ? await readSnapshot({ snapshotPathname })
       : await requestOrigin({ snapshotPathname }, req);
 
@@ -84,7 +83,7 @@ export const buildProcessor = (options: OkozeOptions) => {
     res.set({
       ...headers,
       'cache-control': 'no-store',
-      'x-okoze-snapshot': useSnapshot ? 'used' : 'update',
+      'x-okoze-snapshot': existSnapshot ? 'used' : 'update',
     });
     res.json(data);
   };

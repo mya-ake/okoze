@@ -5,3 +5,9 @@ const parsedCliOptions = parseArgs();
 const options = buildOption(parsedCliOptions);
 
 const app = new OkozeApp(options);
+
+if (options.update) {
+  app.update();
+}
+
+app.listen();

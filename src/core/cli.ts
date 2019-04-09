@@ -19,7 +19,7 @@ cli.option('--protocol <protocol>', 'Protocol to laounch.', {
   default: 'http',
 });
 cli.option('--origin <origin>', 'Origin servers origin.');
-cli.option('--snapshot-dir <snapshot-dir>', 'Directory for saving snapshots.', {
+cli.option('--snapshotDir <snapshot-dir>', 'Directory for saving snapshots.', {
   default: join(process.cwd(), '__snapshots__'),
 });
 
@@ -27,10 +27,6 @@ cli.help();
 
 export const parseArgs = (): OkozeOptions => {
   const parsed = cli.parse();
-  const options = {
-    ...(parsed.options as OkozeOptions),
-    snapshotDir: parsed.options['snapshot-dir'],
-  };
-
+  const options = parsed.options as OkozeOptions;
   return options;
 };

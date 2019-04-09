@@ -7,7 +7,7 @@ import { setupCommonProcessing, buildEnvOptions } from '../fixtures/setup';
 const app = new OkozeApp({
   update: false,
   ...buildEnvOptions(),
-  snapshotDir: join(process.cwd(), 'tests', 'e2e', '__snapshots__', 'basic'),
+  snapshotDir: join(process.cwd(), 'tests', 'e2e', '__snapshots__'),
 });
 
 const request = axios.create({
