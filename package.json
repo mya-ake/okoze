@@ -1,7 +1,7 @@
 {
   "name": "okoze",
   "description": "Okoze is stub server that returns a response using a snapshot of the real server's response.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "repository": "https://github.com/mya-ake/okoze.git",
   "bugs": {
     "url": "https://github.com/mya-ake/okoze/issues"
