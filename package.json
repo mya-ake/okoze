@@ -28,6 +28,7 @@
     "consola": "^2.5.7",
     "express": "^4.16.4",
     "lodash.mergewith": "^4.6.1",
+    "object-hash": "^1.3.1",
     "rimraf": "^2.6.3"
   },
   "devDependencies": {
@@ -36,6 +37,7 @@
     "@types/jest": "^24.0.11",
     "@types/lodash.mergewith": "^4.6.6",
     "@types/node": "^11.12.0",
+    "@types/object-hash": "^1.2.0",
     "@types/rimraf": "^2.0.2",
     "@typescript-eslint/eslint-plugin": "^1.5.0",
     "eslint": "^5.15.3",

@@ -1,6 +1,7 @@
 import express = require('express');
 import axios, { AxiosRequestConfig, AxiosInstance } from 'axios';
 import { join } from 'path';
+import objectHash from 'object-hash';
 import { wrightFile, existPathname, readFile } from './../lib/file';
 import { OkozeOptions, OkozeResponse } from 'src/types';
 
@@ -11,7 +12,11 @@ const createSnapshotPathname = ({
   method: string;
   url: string;
 }) => {
-  return `${method}:${encodeURIComponent(url)}.json`;
+  const hash = objectHash({
+    method,
+    url,
+  });
+  return `${hash}.json`;
 };
 
 const readSnapshot = async ({
