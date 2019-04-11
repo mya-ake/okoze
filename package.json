@@ -10,7 +10,7 @@
   "author": "mya-ake <make.app.ts@gmail.com>",
   "license": "MIT",
   "bin": {
-    "okoze": "dist/src/index.js"
+    "okoze": "dist/index.js"
   },
   "scripts": {
     "build": "tsc",
@@ -19,7 +19,9 @@
     "test:unit": "NODE_ENV=test jest --config ./tests/unit/jest.config.js",
     "test:e2e": "run-s clean test:e2e:*",
     "test:e2e:node": "NODE_ENV=test TEST_TARGET=node jest --config ./tests/e2e/jest.config.js --detectOpenHandles",
-    "test:e2e:browser": "NODE_ENV=test TEST_TARGET=browser jest --config ./tests/e2e/jest.config.js --detectOpenHandles"
+    "test:e2e:browser": "NODE_ENV=test TEST_TARGET=browser jest --config ./tests/e2e/jest.config.js --detectOpenHandles",
+    "prerelease": "run-s test:unit test:e2e build",
+    "release": "np"
   },
   "dependencies": {
     "axios": "^0.18.0",
@@ -42,6 +44,7 @@
     "eslint-plugin-prettier": "^3.0.1",
     "faker": "^4.1.0",
     "jest": "^24.5.0",
+    "np": "^4.0.2",
     "npm-run-all": "^4.1.5",
     "prettier": "^1.16.4",
     "ts-jest": "^24.0.0",
@@ -49,5 +52,15 @@
   },
   "engines": {
     "node": ">=8.10.0"
-  }
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "test",
+    "e2e",
+    "stub",
+    "mock",
+    "server"
+  ]
 }
