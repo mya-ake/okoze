@@ -2,7 +2,6 @@ import express = require('express');
 import axios, { AxiosRequestConfig, AxiosInstance } from 'axios';
 import { join } from 'path';
 import objectHash from 'object-hash';
-import consola from 'consola';
 import { wrightFile, existPathname, readFile } from './../lib/file';
 import { OkozeOptions, OkozeResponse } from 'src/types';
 
@@ -53,13 +52,13 @@ const buildRequestOrigin = (request: AxiosInstance) => {
     )
       .then(response => {
         if (process.env.OKOZE_DEBUG === 'true') {
-          consola.info(response);
+          console.log('[okoze]', response);
         }
         return response;
       })
       .catch(err => {
         if (process.env.OKOZE_DEBUG === 'true') {
-          consola.info(err);
+          console.log('[okoze]', err);
         }
         return err.response || {};
       });
