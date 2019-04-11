@@ -1,18 +1,42 @@
-import { OkozeOptions } from 'src/types';
+import mergeWith from 'lodash.mergewith';
+import { OkozeOptions, OkozeCliOptions, OkozeEnvOptions } from 'src/types';
 
-export const buildOption = (argsOptions: OkozeOptions): OkozeOptions => {
-  const envOptions = {
+const loadConfig = (pathname: string) => {
+  try {
+    return require(pathname);
+  } catch (_) {
+    return {};
+  }
+};
+
+export const mergeOptions = (
+  argsOptions: OkozeCliOptions,
+  config: OkozeOptions,
+  envOptions: OkozeEnvOptions,
+) => {
+  const customizer = (objValue: any, srcValue: any) => {
+    return srcValue ? srcValue : objValue;
+  };
+
+  return mergeWith(
+    mergeWith(argsOptions, config, customizer),
+    envOptions,
+    customizer,
+  );
+};
+
+export const buildOptions = (argsOptions: OkozeCliOptions): OkozeOptions => {
+  const envOptions: OkozeEnvOptions = {
     port: Number(process.env.OKOZE_PORT),
     host: process.env.OKOZE_HOST,
     origin: process.env.OKOZE_ORIGIN,
     snapshotDir: process.env.OKOZE_SNAPSHOT_DIR,
   };
 
-  return {
-    update: argsOptions.update,
-    port: envOptions.port || argsOptions.port,
-    host: envOptions.host || argsOptions.host,
-    origin: envOptions.origin || argsOptions.origin,
-    snapshotDir: envOptions.snapshotDir || argsOptions.snapshotDir,
-  };
+  const { config: configPathname } = argsOptions;
+  const config = loadConfig(configPathname);
+
+  const options = mergeOptions(argsOptions, config, envOptions);
+  console.log(options);
+  return options;
 };

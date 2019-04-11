@@ -1,4 +1,5 @@
 import { createServer, Server } from 'http';
+import { join } from 'path';
 import { OkozeApp } from 'src/core';
 import { buildApp as buildOriginApp } from './../server';
 const rimraf = require('rimraf');
