@@ -13,7 +13,7 @@ export const mergeOptions = (
   argsOptions: OkozeCliOptions,
   config: OkozeOptions,
   envOptions: OkozeEnvOptions,
-) => {
+): OkozeOptions => {
   const customizer = (objValue: any, srcValue: any) => {
     return srcValue ? srcValue : objValue;
   };
@@ -35,8 +35,6 @@ export const buildOptions = (argsOptions: OkozeCliOptions): OkozeOptions => {
 
   const { config: configPathname } = argsOptions;
   const config = loadConfig(configPathname);
-
   const options = mergeOptions(argsOptions, config, envOptions);
-  console.log(options);
   return options;
 };
