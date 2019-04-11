@@ -48,6 +48,10 @@ const buildRequestOrigin = (request: AxiosInstance) => {
       },
     };
 
+    delete axiosConfig.headers.host;
+    delete axiosConfig.headers.connection;
+    delete axiosConfig.headers['if-none-match'];
+
     const { status, data, headers: responseHeaders } = await request(
       axiosConfig,
     )
@@ -63,6 +67,8 @@ const buildRequestOrigin = (request: AxiosInstance) => {
         }
         return err.response || {};
       });
+
+    delete responseHeaders['transfer-encoding'];
 
     await wrightFile(snapshotPathname, {
       status,
