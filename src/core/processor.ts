@@ -2,6 +2,7 @@ import express = require('express');
 import axios, { AxiosRequestConfig, AxiosInstance } from 'axios';
 import { join } from 'path';
 import objectHash from 'object-hash';
+import consola from 'consola';
 import { wrightFile, existPathname, readFile } from './../lib/file';
 import { OkozeOptions, OkozeResponse } from 'src/types';
 
@@ -49,7 +50,19 @@ const buildRequestOrigin = (request: AxiosInstance) => {
 
     const { status, data, headers: responseHeaders } = await request(
       axiosConfig,
-    ).catch(err => err.response || {});
+    )
+      .then(response => {
+        if (process.env.OKOZE_DEBUG === 'true') {
+          consola.debug(response);
+        }
+        return response;
+      })
+      .catch(err => {
+        if (process.env.OKOZE_DEBUG === 'true') {
+          consola.debug(err);
+        }
+        return err.response || {};
+      });
 
     await wrightFile(snapshotPathname, {
       status,
@@ -66,7 +79,7 @@ const buildRequestOrigin = (request: AxiosInstance) => {
 };
 
 export const buildProcessor = (options: OkozeOptions) => {
-  const { update, origin: baseURL, snapshotDir } = options;
+  const { origin: baseURL, snapshotDir } = options;
   const request = axios.create({
     baseURL,
     adapter: require('axios/lib/adapters/http'),

@@ -12,7 +12,7 @@ const buildApp = (options: OkozeOptions) => {
   const { origin: baseURL } = options;
 
   app.use(bodyParser.json());
-  if (process.env.DEBUG === 'true') {
+  if (process.env.OKOZE_DEBUG === 'true') {
     app.use(buildLoggerMiddleware({ baseURL }));
   }
 
