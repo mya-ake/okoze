@@ -1,4 +1,5 @@
 import express = require('express');
+import consola from 'consola';
 import { join } from 'path';
 
 export const buildLoggerMiddleware = ({ baseURL }: { baseURL: string }) => {
@@ -8,7 +9,7 @@ export const buildLoggerMiddleware = ({ baseURL }: { baseURL: string }) => {
     next: express.NextFunction,
   ) => {
     const { method, url } = req;
-    console.log('[okoze]', `${method} ${join(baseURL, url)}`);
+    consola.debug(`${method} ${join(baseURL, url)}`);
     next();
   };
 };

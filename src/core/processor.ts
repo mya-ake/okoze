@@ -2,6 +2,7 @@ import express = require('express');
 import axios, { AxiosRequestConfig, AxiosInstance } from 'axios';
 import { join } from 'path';
 import objectHash from 'object-hash';
+import consola from 'consola';
 import { wrightFile, existPathname, readFile } from './../lib/file';
 import { OkozeOptions, OkozeResponse } from 'src/types';
 
@@ -46,27 +47,22 @@ const buildRequestOrigin = (request: AxiosInstance) => {
         ...headers,
       },
     };
-    delete axiosConfig.headers.host;
-    delete axiosConfig.headers.connection;
-    delete axiosConfig.headers['if-none-match'];
 
     const { status, data, headers: responseHeaders } = await request(
       axiosConfig,
     )
       .then(response => {
         if (process.env.OKOZE_DEBUG === 'true') {
-          console.log('[okoze]', response);
+          consola.debug(response);
         }
         return response;
       })
       .catch(err => {
         if (process.env.OKOZE_DEBUG === 'true') {
-          console.log('[okoze]', err);
+          consola.debug(err);
         }
         return err.response || {};
       });
-
-    delete responseHeaders['transfer-encoding'];
 
     await wrightFile(snapshotPathname, {
       status,
