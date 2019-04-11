@@ -1,6 +1,7 @@
 import express = require('express');
 import bodyParser = require('body-parser');
 import consola from 'consola';
+import cors from 'cors';
 
 import { buildProcessor } from './processor';
 import { buildLoggerMiddleware } from './../middlewares/loggerMiddleWare';
@@ -12,6 +13,7 @@ const buildApp = (options: OkozeOptions) => {
   const { origin: baseURL } = options;
 
   app.use(bodyParser.json());
+  app.use(cors());
   if (process.env.OKOZE_DEBUG === 'true') {
     app.use(buildLoggerMiddleware({ baseURL }));
   }
