@@ -9,7 +9,7 @@
   "author": "mya-ake <make.app.ts@gmail.com>",
   "license": "MIT",
   "bin": {
-    "okoze": "dist/index.js"
+    "okoze": "dist/src/index.js"
   },
   "scripts": {
     "build": "tsc",
