@@ -1,6 +1,6 @@
 import { createServer, Server } from 'http';
 import { OkozeApp } from 'src/core';
-import { app as originApp } from './../server';
+import { buildApp as buildOriginApp } from './../server';
 const rimraf = require('rimraf');
 
 const port = 3000;
@@ -8,6 +8,9 @@ const host = 'localhost';
 const originPort = 3080;
 const originHost = 'localhost';
 const origin = `http://${originHost}:${originPort}`;
+
+export const requestMockFunc = jest.fn();
+const originApp = buildOriginApp(requestMockFunc);
 
 export const buildEnvOptions = () => {
   return {
@@ -41,5 +44,8 @@ export const setupCommonProcessing = (app: OkozeApp) => {
     okozeServer.close();
     originServer.close();
     await removeSnapshots();
+  });
+  beforeEach(() => {
+    requestMockFunc.mockClear();
   });
 };

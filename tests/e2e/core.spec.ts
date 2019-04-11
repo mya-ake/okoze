@@ -2,7 +2,11 @@ import axios from 'axios';
 import { join } from 'path';
 
 import { OkozeApp } from 'src/core';
-import { setupCommonProcessing, buildEnvOptions } from '../fixtures/setup';
+import {
+  setupCommonProcessing,
+  buildEnvOptions,
+  requestMockFunc,
+} from '../fixtures/setup';
 
 const app = new OkozeApp({
   update: false,
@@ -49,10 +53,16 @@ describe('e2e tests, core', () => {
     };
 
     it('update', async () => {
-      expect.assertions(isNode ? 3 : 2);
+      expect.assertions(isNode ? 4 : 3);
       const { status, data, headers } = await requestUsers();
 
       expects({ status, data });
+      expect(requestMockFunc).toHaveBeenCalledWith(
+        expect.objectContaining({
+          method: 'GET',
+          url: '/users',
+        }),
+      );
       if (isNode) {
         expect(headers['x-okoze-snapshot']).toBe('update');
       }
@@ -92,10 +102,17 @@ describe('e2e tests, core', () => {
     };
 
     it('update', async () => {
-      expect.assertions(isNode ? 3 : 2);
+      expect.assertions(isNode ? 4 : 3);
       const { status, data, headers } = await requestUsers();
 
       expects({ status, data });
+      expect(requestMockFunc).toHaveBeenCalledWith(
+        expect.objectContaining({
+          method: 'GET',
+          url: '/users?filter=role:admin',
+          query: { filter: 'role:admin' },
+        }),
+      );
       if (isNode) {
         expect(headers['x-okoze-snapshot']).toBe('update');
       }
@@ -127,10 +144,16 @@ describe('e2e tests, core', () => {
     };
 
     it('update', async () => {
-      expect.assertions(isNode ? 3 : 2);
+      expect.assertions(isNode ? 4 : 3);
       const { status, data, headers } = await requestUsers();
 
       expects({ status, data });
+      expect(requestMockFunc).toHaveBeenCalledWith(
+        expect.objectContaining({
+          method: 'GET',
+          url: '/users/1',
+        }),
+      );
       if (isNode) {
         expect(headers['x-okoze-snapshot']).toBe('update');
       }
@@ -169,10 +192,17 @@ describe('e2e tests, core', () => {
     };
 
     it('update', async () => {
-      expect.assertions(isNode ? 3 : 2);
+      expect.assertions(isNode ? 4 : 3);
       const { status, data, headers } = await requestUsers();
 
       expects({ status, data });
+      expect(requestMockFunc).toHaveBeenCalledWith(
+        expect.objectContaining({
+          method: 'POST',
+          url: '/users',
+          body: userData,
+        }),
+      );
       if (isNode) {
         expect(headers['x-okoze-snapshot']).toBe('update');
       }
@@ -209,10 +239,17 @@ describe('e2e tests, core', () => {
     };
 
     it('update', async () => {
-      expect.assertions(isNode ? 3 : 2);
+      expect.assertions(isNode ? 4 : 3);
       const { status, data, headers } = await requestUsers();
 
       expects({ status, data });
+      expect(requestMockFunc).toHaveBeenCalledWith(
+        expect.objectContaining({
+          method: 'PUT',
+          url: '/users/1',
+          body: userData,
+        }),
+      );
       if (isNode) {
         expect(headers['x-okoze-snapshot']).toBe('update');
       }
@@ -249,10 +286,17 @@ describe('e2e tests, core', () => {
     };
 
     it('update', async () => {
-      expect.assertions(isNode ? 3 : 2);
+      expect.assertions(isNode ? 4 : 3);
       const { status, data, headers } = await requestUsers();
 
       expects({ status, data });
+      expect(requestMockFunc).toHaveBeenCalledWith(
+        expect.objectContaining({
+          method: 'PATCH',
+          url: '/users/1',
+          body: userData,
+        }),
+      );
       if (isNode) {
         expect(headers['x-okoze-snapshot']).toBe('update');
       }
@@ -282,10 +326,16 @@ describe('e2e tests, core', () => {
     };
 
     it('update', async () => {
-      expect.assertions(isNode ? 3 : 2);
+      expect.assertions(isNode ? 4 : 3);
       const { status, data, headers } = await requestUsers();
 
       expects({ status, data });
+      expect(requestMockFunc).toHaveBeenCalledWith(
+        expect.objectContaining({
+          method: 'DELETE',
+          url: '/users/1',
+        }),
+      );
       if (isNode) {
         expect(headers['x-okoze-snapshot']).toBe('update');
       }
@@ -299,6 +349,35 @@ describe('e2e tests, core', () => {
       if (isNode) {
         expect(headers['x-okoze-snapshot']).toBe('used');
       }
+    });
+  });
+
+  describe('headers', () => {
+    const requestUsers = () => {
+      return request
+        .get('/users', {
+          params: { header: 'test' },
+          headers: {
+            Authorization: 'Bearer xxxxx',
+            'x-api-key': 'xxxxx',
+          },
+        })
+        .catch(err => {
+          return err.response;
+        });
+    };
+
+    it('has Authorization', async () => {
+      await requestUsers();
+
+      expect(requestMockFunc).toHaveBeenCalledWith(
+        expect.objectContaining({
+          headers: expect.objectContaining({
+            authorization: 'Bearer xxxxx',
+            'x-api-key': 'xxxxx',
+          }),
+        }),
+      );
     });
   });
 });

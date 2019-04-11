@@ -1,13 +1,15 @@
 import { OkozeApp, buildOption, parseArgs } from './core';
 
-const parsedCliOptions = parseArgs();
+(async () => {
+  const parsedCliOptions = parseArgs();
 
-const options = buildOption(parsedCliOptions);
+  const options = buildOption(parsedCliOptions);
 
-const app = new OkozeApp(options);
+  const app = new OkozeApp(options);
 
-if (options.update) {
-  app.update();
-}
+  if (options.update) {
+    await app.update();
+  }
 
-app.listen();
+  app.listen();
+})();
