@@ -9,7 +9,7 @@ export const buildLoggerMiddleware = ({ baseURL }: { baseURL: string }) => {
     next: express.NextFunction,
   ) => {
     const { method, url } = req;
-    consola.debug(`${method} ${join(baseURL, url)}`);
+    consola.info(`${method} ${join(baseURL, url)}`);
     next();
   };
 };

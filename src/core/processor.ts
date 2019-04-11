@@ -53,13 +53,13 @@ const buildRequestOrigin = (request: AxiosInstance) => {
     )
       .then(response => {
         if (process.env.OKOZE_DEBUG === 'true') {
-          consola.debug(response);
+          consola.info(response);
         }
         return response;
       })
       .catch(err => {
         if (process.env.OKOZE_DEBUG === 'true') {
-          consola.debug(err);
+          consola.info(err);
         }
         return err.response || {};
       });
