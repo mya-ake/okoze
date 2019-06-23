@@ -4,7 +4,8 @@ import { join } from 'path';
 import objectHash from 'object-hash';
 import consola from 'consola';
 import { wrightFile, existPathname, readFile } from './../lib/file';
-import { OkozeOptions, OkozeResponse } from 'src/types';
+import { OkozeOptions, OkozeResponse, Method } from 'src/types';
+import { isMethod } from 'src/types/guards';
 
 const createSnapshotPathname = ({
   method,
@@ -37,8 +38,16 @@ const buildRequestOrigin = (request: AxiosInstance) => {
       url,
       headers,
       body,
-    }: { method: string; url: string; headers: any; body: any },
+    }: {
+      method: string;
+      url: string;
+      headers: any;
+      body: any;
+    },
   ): Promise<OkozeResponse> => {
+    if (!isMethod(method)) {
+      throw new Error('Request method is unknown');
+    }
     const axiosConfig: AxiosRequestConfig = {
       method,
       url,

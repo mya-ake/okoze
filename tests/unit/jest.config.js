@@ -7,6 +7,7 @@ module.exports = {
   moduleNameMapper: {
     '^src/(.*)$': '<rootDir>/src/$1',
   },
+  modulePathIgnorePatterns: ['<rootDir>/dist'],
   testMatch: ['**/tests/unit/**/*.spec.ts'],
   testURL: 'http://localhost/',
   testEnvironment: 'node',
